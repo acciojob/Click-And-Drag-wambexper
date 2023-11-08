@@ -1,25 +1,32 @@
-  const items = document.querySelectorAll('.item');
-    let dragItem = null;
+// Your code here.
 
-    // Add dragstart event listener to each cube
-    items.forEach(item => {
-      item.addEventListener('dragstart', (e) => {
-        dragItem = e.target;
-        e.dataTransfer.effectAllowed = 'move';
-        e.dataTransfer.setData('text/html', e.target.innerHTML);
-      });
+    const itemsContainer = document.querySelector(".items");
+    let isDragging = false;
+    let startPositionX;
+    let scrollLeft;
+
+    itemsContainer.addEventListener("mousedown", (e) => {
+      isDragging = true;
+      startPositionX = e.pageX - itemsContainer.offsetLeft;
+      scrollLeft = itemsContainer.scrollLeft;
+      itemsContainer.classList.add("active");
     });
 
-    // Add dragover event listener to the items container
-    document.querySelector('.items').addEventListener('dragover', (e) => {
+    itemsContainer.addEventListener("mousemove", (e) => {
+      if (!isDragging) return;
       e.preventDefault();
+      const x = e.pageX - itemsContainer.offsetLeft;
+      const walk = (x - startPositionX) * 2; // Adjust drag speed here
+      itemsContainer.scrollLeft = scrollLeft - walk;
     });
 
-    // Add drop event listener to the items container
-    document.querySelector('.items').addEventListener('drop', (e) => {
-      e.preventDefault();
-      if (dragItem) {
-        dragItem.innerHTML = e.dataTransfer.getData('text/html');
-        dragItem = null;
-      }
+    itemsContainer.addEventListener("mouseup", () => {
+      isDragging = false;
+      itemsContainer.classList.remove("active");
     });
+
+    itemsContainer.addEventListener("mouseleave", () => {
+      isDragging = false;
+      itemsContainer.classList.remove("active");
+    });
+  
